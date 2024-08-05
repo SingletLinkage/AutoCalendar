@@ -26,13 +26,19 @@ function getAllSlots(){
   dictionary["H"] = [-1, 10, -1, 8, 11];
   dictionary["FS"] = [17, 17, -1, 17, 17];
 
+  dictionary["L1"] = [17, -1, -1, -1, -1];
+  dictionary["L2"] = [-1, 17, -1, -1, -1];
+  dictionary["L3"] = [-1, -1, 17, -1, -1];
+  dictionary["L4"] = [-1, -1, -1, 17, -1];
+  dictionary["L5"] = [-1, -1, -1, -1, 17];
+
   return dictionary;
 }
 
 function createSlotEvent(calendar_name, slot, eventName, description='', location=''){
   var calendar = CalendarApp.getCalendarsByName(calendar_name)[0]; // can change the name Acad_
   // var calendar = CalendarApp.getDefaultCalendar(); --> if you dont want to create new calender (NOT RECOMMENDED - clearing calendar will delete everything in this case)
-  var slots = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FS'];
+  var slots = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'FS', 'L1', 'L2', 'L3' ,'L4', 'L5'];
   var monday = getLastMonday();
   if (!slots.includes(slot)){
     Logger.log('Slot ' + slot + ' not found!');
@@ -47,7 +53,12 @@ function createSlotEvent(calendar_name, slot, eventName, description='', locatio
     'F': 6,  
     'G': 7,  
     'H': 8,  
-    'FS': 9  
+    'FS': 9,
+    'L1': 10,
+    'L2': 11,
+    'L3': 12,
+    'L4': 1,
+    'L5': 2,  
   };
 
   var timeDict = getAllSlots()[slot];
@@ -62,7 +73,11 @@ function createSlotEvent(calendar_name, slot, eventName, description='', locatio
     }
 
     var start = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), startTime, 0));
-    var end = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), startTime+1, 0));
+    if (slot == 'L1' || slot == 'L2' || slot == 'L3' || slot == 'L4' || slot == 'L5'){
+      var end = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), startTime+3, 0));
+    }else{
+      var end = new Date(Date.UTC(day.getFullYear(), day.getMonth(), day.getDate(), startTime+1, 0));
+    }
     var offset = 5.5 * 60 * 60 * 1000;  // 5 hours 30 minutes in milliseconds`
 
     var event = calendar.createEventSeries(
@@ -95,7 +110,7 @@ function getLastMonday() {
 
 
 function main() {
-  var calendar_name = 'DSE_acad';
+  var calendar_name = 'CSE_acad';
   var calendars = CalendarApp.getCalendarsByName(calendar_name);
   
   if (calendars.length === 0) {
@@ -106,23 +121,23 @@ function main() {
   
 
   // Only Edit this part - Change the Title as per need and comment out slots you dont need
-  // // createSlotEvent('A', "Event A");
-  // createSlotEvent('B', "CS208 - Maths - A18 2");
-  // // createSlotEvent('C', "Event C");
-  // createSlotEvent('D', "CS212 - DOA - A11 1A");
-  // createSlotEvent('E', "CS214 - CO - A18 1");
-  // // createSlotEvent('F', "Event F");
-  // createSlotEvent('G', "IC272 - DS3 - Audi");
-  // createSlotEvent('H', "HSS");
-  // //createSlotEvent('FS', "Event FS");
-  // createSlotEvent('A', 'A');
-  createSlotEvent(calendar_name, 'B', 'DS301 - A17-1B');
-  // createSlotEvent('C', 'C');
-  // createSlotEvent('D', 'D');
-  createSlotEvent(calendar_name, 'E', "CS214 - A18 1");
-  createSlotEvent(calendar_name, 'F', 'DS201 - A17-1B');
-  createSlotEvent(calendar_name, 'G', "IC272 - Audi");
-  createSlotEvent(calendar_name, 'H', "HSS")
+  createSlotEvent(calendar_name, 'A', "A Slot HSS", "HS344 Sociology A13 2A,  HS357 CW A10 2B");
+  createSlotEvent(calendar_name, 'B', "CS208 - Maths - A18 2 - 3104");
+  createSlotEvent(calendar_name, 'D', "CS212 - DOA - A11 1A - 3024");
+  createSlotEvent(calendar_name, 'E', "CS214 - CO - A18 1 - 3024");
+  createSlotEvent(calendar_name, 'G', "IC272 - DS3 - Audi - 3003");
+  createSlotEvent(calendar_name, 'H', "H Slot HSS", 'HS208 English 2 A5-3,  HS202 PoE A11 1A,  HS261 A13 2A');
+
+  createSlotEvent(calendar_name, 'L2', "CS213 Reverse Engineering");
+  createSlotEvent(calendar_name, 'L2', "IC202P DP");
+  createSlotEvent(calendar_name, 'L4', "CS212 DOA");
+
+  // createSlotEvent(calendar_name, 'F', 'DS201 - dhv - A17 1B');
+  // createSlotEvent(calendar_name, 'B', 'DS301 - A17-1B');
+  // createSlotEvent(calendar_name, 'E', "CS214 - A18 1");
+  // createSlotEvent(calendar_name, 'F', 'DS201 - A17-1B');
+  // createSlotEvent(calendar_name, 'G', "IC272 - Audi");
+  // createSlotEvent(calendar_name, 'H', "HSS");
 
 
 }
@@ -160,7 +175,7 @@ function getEvent_details(){
 
 function clearCalendar(){
   // var today = new Date();
-  var calendar_name = 'Acad_';
+  var calendar_name = 'CSE_Acad';
   var calendar = CalendarApp.getCalendarsByName(calendar_name)[0];
   // var start = new Date(today.getFullYear(), today.getMonth(), 1);
   // var end = new Date(today.getFullYear(), today.getMonth() + 5, 0);
